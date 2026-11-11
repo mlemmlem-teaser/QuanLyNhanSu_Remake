@@ -39,6 +39,7 @@
             labelNgoaiNgu = new Label();
             labelDanhSach = new Label();
             dataGridViewNhanVien = new DataGridView();
+            buttonXuatExcel = new Button();
             groupBoxDieuKien.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewNhanVien).BeginInit();
             SuspendLayout();
@@ -54,6 +55,7 @@
             // 
             // groupBoxDieuKien
             // 
+            groupBoxDieuKien.Controls.Add(buttonXuatExcel);
             groupBoxDieuKien.Controls.Add(buttonDong);
             groupBoxDieuKien.Controls.Add(buttonTaiLai);
             groupBoxDieuKien.Controls.Add(buttonLoc);
@@ -70,7 +72,7 @@
             // 
             // buttonDong
             // 
-            buttonDong.Location = new Point(435, 187);
+            buttonDong.Location = new Point(545, 185);
             buttonDong.Name = "buttonDong";
             buttonDong.Size = new Size(94, 29);
             buttonDong.TabIndex = 8;
@@ -79,7 +81,7 @@
             // 
             // buttonTaiLai
             // 
-            buttonTaiLai.Location = new Point(332, 188);
+            buttonTaiLai.Location = new Point(323, 186);
             buttonTaiLai.Name = "buttonTaiLai";
             buttonTaiLai.Size = new Size(94, 28);
             buttonTaiLai.TabIndex = 7;
@@ -88,7 +90,7 @@
             // 
             // buttonLoc
             // 
-            buttonLoc.Location = new Point(196, 188);
+            buttonLoc.Location = new Point(187, 186);
             buttonLoc.Name = "buttonLoc";
             buttonLoc.Size = new Size(130, 28);
             buttonLoc.TabIndex = 6;
@@ -154,6 +156,15 @@
             dataGridViewNhanVien.Size = new Size(776, 252);
             dataGridViewNhanVien.TabIndex = 3;
             // 
+            // buttonXuatExcel
+            // 
+            buttonXuatExcel.Location = new Point(423, 187);
+            buttonXuatExcel.Name = "buttonXuatExcel";
+            buttonXuatExcel.Size = new Size(116, 29);
+            buttonXuatExcel.TabIndex = 9;
+            buttonXuatExcel.Text = "Xuất báo cáo";
+            buttonXuatExcel.UseVisualStyleBackColor = true;
+            // 
             // FormBaoCaoNhanVien
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -185,5 +196,6 @@
         private Label labelChuyenMon;
         private Label labelDanhSach;
         private DataGridView dataGridViewNhanVien;
+        private Button buttonXuatExcel;
     }
 }

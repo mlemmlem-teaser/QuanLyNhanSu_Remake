@@ -15,6 +15,7 @@ namespace QuanLyNhanSu.GUI
             buttonLoc.Click += buttonLoc_Click;
             buttonTaiLai.Click += buttonTaiLai_Click;
             buttonDong.Click += buttonDong_Click;
+            buttonXuatExcel.Click += buttonXuatExcel_Click;
         }
 
         private void FormBaoCaoQTDT_ChuaKetThuc_Load(
@@ -115,6 +116,14 @@ namespace QuanLyNhanSu.GUI
         {
             dataGridViewQTDTChuaKetThuc.DataSource = null;
             dataGridViewQTDTChuaKetThuc.Columns.Clear();
+        }
+
+        private void buttonXuatExcel_Click(object sender, EventArgs e)
+        {
+            ExcelHelper.XuatExcel(
+                dataGridViewQTDTChuaKetThuc,
+                "BaoCaoDaoTaoChuaKetThuc"
+            );
         }
 
         private void buttonDong_Click(object sender, EventArgs e)

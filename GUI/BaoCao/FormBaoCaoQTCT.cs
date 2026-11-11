@@ -15,6 +15,7 @@ namespace QuanLyNhanSu.GUI
             buttonLoc.Click += buttonLoc_Click;
             buttonTaiLai.Click += buttonTaiLai_Click;
             buttonDong.Click += buttonDong_Click;
+            buttonXuatExcel.Click += buttonXuatExcel_Click;
         }
 
         private void FormBaoCaoQTCT_Load(object sender, EventArgs e)
@@ -121,6 +122,14 @@ namespace QuanLyNhanSu.GUI
             comboBoxPhongBan.SelectedIndex = 0;
 
             dataGridViewQTCT.DataSource = null;
+        }
+
+        private void buttonXuatExcel_Click(object sender, EventArgs e)
+        {
+            ExcelHelper.XuatExcel(
+                dataGridViewQTCT,
+                "BaoCaoQuaTrinhCongTac"
+            );
         }
 
         private void buttonDong_Click(object sender, EventArgs e)

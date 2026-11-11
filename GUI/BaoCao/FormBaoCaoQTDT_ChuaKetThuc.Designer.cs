@@ -35,6 +35,7 @@
             buttonDong = new Button();
             labelDanhSach = new Label();
             dataGridViewQTDTChuaKetThuc = new DataGridView();
+            buttonXuatExcel = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewQTDTChuaKetThuc).BeginInit();
             SuspendLayout();
             // 
@@ -76,7 +77,7 @@
             // 
             // buttonDong
             // 
-            buttonDong.Location = new Point(429, 113);
+            buttonDong.Location = new Point(553, 113);
             buttonDong.Name = "buttonDong";
             buttonDong.Size = new Size(94, 29);
             buttonDong.TabIndex = 4;
@@ -108,11 +109,21 @@
             dataGridViewQTDTChuaKetThuc.Size = new Size(776, 225);
             dataGridViewQTDTChuaKetThuc.TabIndex = 6;
             // 
+            // buttonXuatExcel
+            // 
+            buttonXuatExcel.Location = new Point(429, 113);
+            buttonXuatExcel.Name = "buttonXuatExcel";
+            buttonXuatExcel.Size = new Size(118, 29);
+            buttonXuatExcel.TabIndex = 7;
+            buttonXuatExcel.Text = "Xuất báo cáo";
+            buttonXuatExcel.UseVisualStyleBackColor = true;
+            // 
             // FormBaoCaoQTDT_ChuaKetThuc
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(buttonXuatExcel);
             Controls.Add(dataGridViewQTDTChuaKetThuc);
             Controls.Add(labelDanhSach);
             Controls.Add(buttonDong);
@@ -136,5 +147,6 @@
         private Button buttonDong;
         private Label labelDanhSach;
         private DataGridView dataGridViewQTDTChuaKetThuc;
+        private Button buttonXuatExcel;
     }
 }

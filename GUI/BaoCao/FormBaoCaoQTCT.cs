@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace QuanLyNhanSu.GUI
 {
-    public partial class FormBaoCaoQTCT : Form
+    public partial class FormBaoCaoQTCT : FormCoSo
     {
         public FormBaoCaoQTCT()
         {
@@ -18,113 +18,61 @@ namespace QuanLyNhanSu.GUI
             buttonXuatExcel.Click += buttonXuatExcel_Click;
         }
 
-        private void FormBaoCaoQTCT_Load(object sender, EventArgs e)
+        private void FormBaoCaoQTCT_Load(object? sender, EventArgs e)
         {
+            CauHinhLuoiBaoCao(dataGridViewQTCT);
             NapDuLieuComboBox();
 
-            dataGridViewQTCT.AutoGenerateColumns = true;
-            dataGridViewQTCT.ReadOnly = true;
-            dataGridViewQTCT.AllowUserToAddRows = false;
-            dataGridViewQTCT.AllowUserToDeleteRows = false;
-            dataGridViewQTCT.AutoSizeColumnsMode =
-                DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewQTCT.SelectionMode =
-                DataGridViewSelectionMode.FullRowSelect;
-            dataGridViewQTCT.MultiSelect = false;
-            dataGridViewQTCT.RowHeadersVisible = false;
+            // Tự động xem báo cáo (tất cả nhân viên/phòng ban) ngay khi mở form.
+            XemBaoCao(false);
         }
 
         private void NapDuLieuComboBox()
         {
             try
             {
-                DataTable dtNhanVien = NhanVienBUS.GetAll();
-
-                DataRow dongTatCaNV = dtNhanVien.NewRow();
-                dongTatCaNV["MaNV"] = "ALL";
-                dongTatCaNV["HoTen"] = "Tất cả nhân viên";
-
-                dtNhanVien.Rows.InsertAt(dongTatCaNV, 0);
-
-                comboBoxNhanVien.DataSource = dtNhanVien;
-                comboBoxNhanVien.DisplayMember = "HoTen";
-                comboBoxNhanVien.ValueMember = "MaNV";
-                comboBoxNhanVien.SelectedIndex = 0;
-
-                DataTable dtPhongBan =
-                    DanhMucBUS.GetAll("PhongBan");
-
-                DataRow dongTatCaPB = dtPhongBan.NewRow();
-                dongTatCaPB["MaPhong"] = "ALL";
-                dongTatCaPB["TenPhong"] = "Tất cả phòng ban";
-
-                dtPhongBan.Rows.InsertAt(dongTatCaPB, 0);
-
-                comboBoxPhongBan.DataSource = dtPhongBan;
-                comboBoxPhongBan.DisplayMember = "TenPhong";
-                comboBoxPhongBan.ValueMember = "MaPhong";
-                comboBoxPhongBan.SelectedIndex = 0;
+                NapCombo(comboBoxNhanVien, NhanVienBUS.GetAll(), "MaNV",
+                    r => Chuoi(r["HoTen"]), "Tất cả nhân viên");
+                NapComboDanhMuc(comboBoxPhongBan, "PhongBan", "MaPhong", "TenPhong", "Tất cả phòng ban");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Lỗi nạp dữ liệu: " + ex.Message,
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                HienLoi(ex, "Lỗi nạp dữ liệu:");
             }
         }
 
-        private void buttonLoc_Click(object sender, EventArgs e)
+        // Chạy báo cáo theo điều kiện đang chọn; hienThongBao = true thì báo khi không có dữ liệu.
+        private void XemBaoCao(bool hienThongBao)
         {
             try
             {
-                string maNV = comboBoxNhanVien.SelectedValue?.ToString();
-                string maPhong = comboBoxPhongBan.SelectedValue?.ToString();
-
-                if (maNV == "ALL")
-                    maNV = null;
-
-                if (maPhong == "ALL")
-                    maPhong = null;
-
-                DataTable dt = BaoCaoBUS.BaoCaoQTCT(
-                    maNV, maPhong
-                );
+                DataTable dt = BaoCaoBUS.BaoCaoQTCT(LayMa(comboBoxNhanVien), LayMa(comboBoxPhongBan));
 
                 dataGridViewQTCT.DataSource = dt;
 
-                if (dt.Rows.Count == 0)
-                {
-                    MessageBox.Show(
-                        "Không tìm thấy quá trình công tác!",
-                        "Thông báo",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
-                }
+                if (hienThongBao && dt.Rows.Count == 0)
+                    ThongTin("Không tìm thấy quá trình công tác!");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Lỗi báo cáo: " + ex.Message,
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                HienLoi(ex, "Lỗi báo cáo:");
             }
         }
 
-        private void buttonTaiLai_Click(object sender, EventArgs e)
+        private void buttonLoc_Click(object? sender, EventArgs e)
         {
-            comboBoxNhanVien.SelectedIndex = 0;
-            comboBoxPhongBan.SelectedIndex = 0;
-
-            dataGridViewQTCT.DataSource = null;
+            XemBaoCao(true);
         }
 
-        private void buttonXuatExcel_Click(object sender, EventArgs e)
+        // Đặt lại điều kiện về "Tất cả" và xem lại toàn bộ báo cáo.
+        private void buttonTaiLai_Click(object? sender, EventArgs e)
+        {
+            DatDauTien(comboBoxNhanVien);
+            DatDauTien(comboBoxPhongBan);
+            XemBaoCao(false);
+        }
+
+        private void buttonXuatExcel_Click(object? sender, EventArgs e)
         {
             ExcelHelper.XuatExcel(
                 dataGridViewQTCT,
@@ -132,7 +80,7 @@ namespace QuanLyNhanSu.GUI
             );
         }
 
-        private void buttonDong_Click(object sender, EventArgs e)
+        private void buttonDong_Click(object? sender, EventArgs e)
         {
             this.Close();
         }

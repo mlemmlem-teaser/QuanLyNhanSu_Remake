@@ -8,7 +8,7 @@ namespace QuanLyNhanSu.GUI
     /// Các tiêu chí để trống sẽ được bỏ qua; có thể kết hợp nhiều tiêu chí.
     /// Dữ liệu lấy từ NhanVienBUS.
     /// </summary>
-    public partial class FormTimKiemNV : Form
+    public partial class FormTimKiemNV : FormCoSo
     {
         public FormTimKiemNV()
         {
@@ -31,11 +31,7 @@ namespace QuanLyNhanSu.GUI
         /// </summary>
         private void dataGridViewKetQua_DataBindingComplete(object? sender, DataGridViewBindingCompleteEventArgs e)
         {
-            if (dataGridViewKetQua.Columns.Count == 0) return;
-
-            DataGridViewColumn cotCuoi = dataGridViewKetQua.Columns[dataGridViewKetQua.Columns.Count - 1];
-            cotCuoi.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            cotCuoi.MinimumWidth = 150;
+            GianCotCuoi(dataGridViewKetQua);
         }
 
         /// <summary>
@@ -81,33 +77,17 @@ namespace QuanLyNhanSu.GUI
 
             try
             {
-                NapComboBox(comboBoxPhongBan, "PhongBan", "MaPhong", "TenPhong");
-                NapComboBox(comboBoxChucVu, "ChucVu", "MaCV", "TenCV");
-                NapComboBox(comboBoxHocVan, "HocVan", "MaHV", "TenHV");
-                NapComboBox(comboBoxNgoaiNgu, "NgoaiNgu", "MaNN", "TenNN");
+                NapComboDanhMuc(comboBoxPhongBan, "PhongBan", "MaPhong", "TenPhong");
+                NapComboDanhMuc(comboBoxChucVu, "ChucVu", "MaCV", "TenCV");
+                NapComboDanhMuc(comboBoxHocVan, "HocVan", "MaHV", "TenHV");
+                NapComboDanhMuc(comboBoxNgoaiNgu, "NgoaiNgu", "MaNN", "TenNN");
 
                 TimKiem();
             }
             catch (Exception ex)
             {
-                HienThiLoi(ex);
+                HienLoi(ex, "Có lỗi khi truy vấn dữ liệu:");
             }
-        }
-
-        /// <summary>Nạp danh mục vào ComboBox, dòng đầu để trống (= không lọc).</summary>
-        private static void NapComboBox(ComboBox comboBox, string loaiDanhMuc, string cotMa, string cotTen)
-        {
-            DataTable bang = DanhMucBUS.GetAll(loaiDanhMuc);
-
-            DataRow dongTrong = bang.NewRow();
-            dongTrong[cotMa] = "";
-            dongTrong[cotTen] = "";
-            bang.Rows.InsertAt(dongTrong, 0);
-
-            comboBox.DisplayMember = cotTen;
-            comboBox.ValueMember = cotMa;
-            comboBox.DataSource = bang;
-            comboBox.SelectedIndex = 0;
         }
 
         // ===== Tìm kiếm =====
@@ -126,18 +106,6 @@ namespace QuanLyNhanSu.GUI
             labelTongSo.Text = $"Tổng số: {ketQua.Rows.Count} kết quả";
         }
 
-        private static void HienThiLoi(Exception ex)
-        {
-            if (ex is NghiepVuException)
-            {
-                MessageBox.Show(ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            MessageBox.Show("Có lỗi khi truy vấn dữ liệu:\n" + ex.Message,
-                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
         // ===== Sự kiện =====
 
         private void buttonTimKiem_Click(object? sender, EventArgs e)
@@ -148,7 +116,7 @@ namespace QuanLyNhanSu.GUI
             }
             catch (Exception ex)
             {
-                HienThiLoi(ex);
+                HienLoi(ex, "Có lỗi khi truy vấn dữ liệu:");
             }
         }
 
@@ -167,7 +135,7 @@ namespace QuanLyNhanSu.GUI
             }
             catch (Exception ex)
             {
-                HienThiLoi(ex);
+                HienLoi(ex, "Có lỗi khi truy vấn dữ liệu:");
             }
 
             textBoxMaNV.Focus();

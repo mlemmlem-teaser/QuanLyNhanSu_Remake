@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace QuanLyNhanSu.GUI
 {
-    public partial class FormBaoCaoQTDT_ChuaKetThuc : Form
+    public partial class FormBaoCaoQTDT_ChuaKetThuc : FormCoSo
     {
         public FormBaoCaoQTDT_ChuaKetThuc()
         {
@@ -18,107 +18,64 @@ namespace QuanLyNhanSu.GUI
             buttonXuatExcel.Click += buttonXuatExcel_Click;
         }
 
-        private void FormBaoCaoQTDT_ChuaKetThuc_Load(
-            object sender, EventArgs e)
+        private void FormBaoCaoQTDT_ChuaKetThuc_Load(object? sender, EventArgs e)
         {
-            dataGridViewQTDTChuaKetThuc.AutoGenerateColumns = true;
-            dataGridViewQTDTChuaKetThuc.ReadOnly = true;
-            dataGridViewQTDTChuaKetThuc.AllowUserToAddRows = false;
-            dataGridViewQTDTChuaKetThuc.AllowUserToDeleteRows = false;
+            CauHinhLuoiBaoCao(dataGridViewQTDTChuaKetThuc);
 
-            dataGridViewQTDTChuaKetThuc.AutoSizeColumnsMode =
-                DataGridViewAutoSizeColumnsMode.Fill;
-
-            dataGridViewQTDTChuaKetThuc.SelectionMode =
-                DataGridViewSelectionMode.FullRowSelect;
-
-            dataGridViewQTDTChuaKetThuc.MultiSelect = false;
-            dataGridViewQTDTChuaKetThuc.RowHeadersVisible = false;
-
-            dataGridViewQTDTChuaKetThuc.DataSource = null;
-            dataGridViewQTDTChuaKetThuc.Columns.Clear();
+            // Tự động xem báo cáo ngay khi mở form (như bấm "Xem báo cáo").
+            XemBaoCao(false);
         }
 
-        private void buttonLoc_Click(object sender, EventArgs e)
+        // Nạp báo cáo vào lưới; hienThongBao = true thì báo khi không có dữ liệu.
+        private void XemBaoCao(bool hienThongBao)
         {
             try
             {
-                DataTable dt =
-                    BaoCaoBUS.BaoCaoQTDTChuaKetThuc();
+                DataTable dt = BaoCaoBUS.BaoCaoQTDTChuaKetThuc();
 
                 dataGridViewQTDTChuaKetThuc.DataSource = dt;
+                DatTieuDeCot();
 
-                // Đổi tên hiển thị các cột
-                if (dataGridViewQTDTChuaKetThuc.Columns.Count > 0)
-                {
-                    dataGridViewQTDTChuaKetThuc.Columns["MaQTDT"]
-                        .HeaderText = "Mã QTĐT";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["MaNV"]
-                        .HeaderText = "Mã nhân viên";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["HoTen"]
-                        .HeaderText = "Họ tên";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["TuNgay"]
-                        .HeaderText = "Từ ngày";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["DenNgay"]
-                        .HeaderText = "Đến ngày";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["MaTruong"]
-                        .HeaderText = "Mã trường";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["TenTruong"]
-                        .HeaderText = "Trường đào tạo";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["MaHT"]
-                        .HeaderText = "Mã hình thức";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["TenHT"]
-                        .HeaderText = "Hình thức đào tạo";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["MaNganh"]
-                        .HeaderText = "Mã ngành";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["TenNganh"]
-                        .HeaderText = "Ngành đào tạo";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["MaXL"]
-                        .HeaderText = "Mã xếp loại";
-
-                    dataGridViewQTDTChuaKetThuc.Columns["TenXL"]
-                        .HeaderText = "Xếp loại";
-                }
-
-                if (dt.Rows.Count == 0)
-                {
-                    MessageBox.Show(
-                        "Không có quá trình đào tạo nào chưa kết thúc!",
-                        "Thông báo",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
-                }
+                if (hienThongBao && dt.Rows.Count == 0)
+                    ThongTin("Không có quá trình đào tạo nào chưa kết thúc!");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Lỗi báo cáo: " + ex.Message,
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                HienLoi(ex, "Lỗi báo cáo:");
             }
         }
 
-        private void buttonTaiLai_Click(object sender, EventArgs e)
+        // Đổi tên hiển thị các cột
+        private void DatTieuDeCot()
         {
-            dataGridViewQTDTChuaKetThuc.DataSource = null;
-            dataGridViewQTDTChuaKetThuc.Columns.Clear();
+            DataGridView g = dataGridViewQTDTChuaKetThuc;
+            DatCot(g, "MaQTDT", "Mã QTĐT");
+            DatCot(g, "MaNV", "Mã nhân viên");
+            DatCot(g, "HoTen", "Họ tên");
+            DatCot(g, "TuNgay", "Từ ngày");
+            DatCot(g, "DenNgay", "Đến ngày");
+            DatCot(g, "MaTruong", "Mã trường");
+            DatCot(g, "TenTruong", "Trường đào tạo");
+            DatCot(g, "MaHT", "Mã hình thức");
+            DatCot(g, "TenHT", "Hình thức đào tạo");
+            DatCot(g, "MaNganh", "Mã ngành");
+            DatCot(g, "TenNganh", "Ngành đào tạo");
+            DatCot(g, "MaXL", "Mã xếp loại");
+            DatCot(g, "TenXL", "Xếp loại");
         }
 
-        private void buttonXuatExcel_Click(object sender, EventArgs e)
+        private void buttonLoc_Click(object? sender, EventArgs e)
+        {
+            XemBaoCao(true);
+        }
+
+        // Nạp lại báo cáo từ cơ sở dữ liệu.
+        private void buttonTaiLai_Click(object? sender, EventArgs e)
+        {
+            XemBaoCao(false);
+        }
+
+        private void buttonXuatExcel_Click(object? sender, EventArgs e)
         {
             ExcelHelper.XuatExcel(
                 dataGridViewQTDTChuaKetThuc,
@@ -126,7 +83,7 @@ namespace QuanLyNhanSu.GUI
             );
         }
 
-        private void buttonDong_Click(object sender, EventArgs e)
+        private void buttonDong_Click(object? sender, EventArgs e)
         {
             this.Close();
         }

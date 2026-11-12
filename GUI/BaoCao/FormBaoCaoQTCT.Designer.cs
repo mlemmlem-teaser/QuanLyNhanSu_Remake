@@ -47,6 +47,7 @@
             // labelTieuDe
             // 
             labelTieuDe.AutoSize = true;
+            labelTieuDe.Anchor = AnchorStyles.Top;
             labelTieuDe.Location = new Point(269, 9);
             labelTieuDe.Name = "labelTieuDe";
             labelTieuDe.Size = new Size(230, 20);
@@ -63,16 +64,17 @@
             groupBoxDieuKien.Controls.Add(labelPhongBan);
             groupBoxDieuKien.Controls.Add(comboBoxNhanVien);
             groupBoxDieuKien.Controls.Add(labelNhanVien);
+            groupBoxDieuKien.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             groupBoxDieuKien.Location = new Point(12, 52);
             groupBoxDieuKien.Name = "groupBoxDieuKien";
-            groupBoxDieuKien.Size = new Size(776, 240);
+            groupBoxDieuKien.Size = new Size(776, 256);
             groupBoxDieuKien.TabIndex = 1;
             groupBoxDieuKien.TabStop = false;
             groupBoxDieuKien.Text = "Điều kiện báo cáo";
             // 
             // buttonDong
             // 
-            buttonDong.Location = new Point(562, 205);
+            buttonDong.Location = new Point(562, 213);
             buttonDong.Name = "buttonDong";
             buttonDong.Size = new Size(94, 29);
             buttonDong.TabIndex = 6;
@@ -81,7 +83,7 @@
             // 
             // buttonTaiLai
             // 
-            buttonTaiLai.Location = new Point(326, 205);
+            buttonTaiLai.Location = new Point(326, 213);
             buttonTaiLai.Name = "buttonTaiLai";
             buttonTaiLai.Size = new Size(94, 29);
             buttonTaiLai.TabIndex = 5;
@@ -90,7 +92,7 @@
             // 
             // buttonLoc
             // 
-            buttonLoc.Location = new Point(187, 205);
+            buttonLoc.Location = new Point(187, 213);
             buttonLoc.Name = "buttonLoc";
             buttonLoc.Size = new Size(133, 29);
             buttonLoc.TabIndex = 4;
@@ -102,7 +104,7 @@
             comboBoxPhongBan.FormattingEnabled = true;
             comboBoxPhongBan.Location = new Point(18, 147);
             comboBoxPhongBan.Name = "comboBoxPhongBan";
-            comboBoxPhongBan.Size = new Size(151, 28);
+            comboBoxPhongBan.Size = new Size(280, 28);
             comboBoxPhongBan.TabIndex = 3;
             // 
             // labelPhongBan
@@ -119,7 +121,7 @@
             comboBoxNhanVien.FormattingEnabled = true;
             comboBoxNhanVien.Location = new Point(18, 65);
             comboBoxNhanVien.Name = "comboBoxNhanVien";
-            comboBoxNhanVien.Size = new Size(151, 28);
+            comboBoxNhanVien.Size = new Size(280, 28);
             comboBoxNhanVien.TabIndex = 1;
             // 
             // labelNhanVien
@@ -134,7 +136,7 @@
             // labelDanhSach
             // 
             labelDanhSach.AutoSize = true;
-            labelDanhSach.Location = new Point(12, 317);
+            labelDanhSach.Location = new Point(12, 333);
             labelDanhSach.Name = "labelDanhSach";
             labelDanhSach.Size = new Size(251, 20);
             labelDanhSach.TabIndex = 2;
@@ -146,18 +148,19 @@
             dataGridViewQTCT.AllowUserToDeleteRows = false;
             dataGridViewQTCT.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewQTCT.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewQTCT.Location = new Point(12, 340);
+            dataGridViewQTCT.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dataGridViewQTCT.Location = new Point(12, 356);
             dataGridViewQTCT.MultiSelect = false;
             dataGridViewQTCT.Name = "dataGridViewQTCT";
             dataGridViewQTCT.RowHeadersVisible = false;
             dataGridViewQTCT.RowHeadersWidth = 51;
             dataGridViewQTCT.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridViewQTCT.Size = new Size(776, 238);
+            dataGridViewQTCT.Size = new Size(776, 278);
             dataGridViewQTCT.TabIndex = 3;
             // 
             // buttonXuatExcel
             // 
-            buttonXuatExcel.Location = new Point(426, 205);
+            buttonXuatExcel.Location = new Point(426, 213);
             buttonXuatExcel.Name = "buttonXuatExcel";
             buttonXuatExcel.Size = new Size(130, 29);
             buttonXuatExcel.TabIndex = 7;
@@ -168,7 +171,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 590);
+            ClientSize = new Size(800, 646);
             Controls.Add(dataGridViewQTCT);
             Controls.Add(labelDanhSach);
             Controls.Add(groupBoxDieuKien);

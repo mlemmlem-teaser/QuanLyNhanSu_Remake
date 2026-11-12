@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace QuanLyNhanSu.GUI
 {
-    public partial class FormBaoCaoNhanVien : Form
+    public partial class FormBaoCaoNhanVien : FormCoSo
     {
         public FormBaoCaoNhanVien()
         {
@@ -18,108 +18,68 @@ namespace QuanLyNhanSu.GUI
             buttonXuatExcel.Click += buttonXuatExcel_Click;
         }
 
-        private void FormBaoCaoNhanVien_Load(object sender, EventArgs e)
+        // Báo cáo này bắt buộc chọn cả ngoại ngữ và chuyên môn nên KHÔNG tự chạy khi mở form.
+        private void FormBaoCaoNhanVien_Load(object? sender, EventArgs e)
         {
+            CauHinhLuoiBaoCao(dataGridViewNhanVien);
             NapDuLieuComboBox();
-
-            dataGridViewNhanVien.AutoGenerateColumns = true;
-            dataGridViewNhanVien.ReadOnly = true;
-            dataGridViewNhanVien.AllowUserToAddRows = false;
-            dataGridViewNhanVien.SelectionMode =
-                DataGridViewSelectionMode.FullRowSelect;
-            dataGridViewNhanVien.AutoSizeColumnsMode =
-                DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         private void NapDuLieuComboBox()
         {
             try
             {
-                DataTable dtNgoaiNgu =
-                    DanhMucBUS.GetAll("NgoaiNgu");
-
-                comboBoxNgoaiNgu.DataSource = dtNgoaiNgu;
-                comboBoxNgoaiNgu.DisplayMember = "TenNN";
-                comboBoxNgoaiNgu.ValueMember = "MaNN";
-                comboBoxNgoaiNgu.SelectedIndex = -1;
-
-                DataTable dtChuyenMon =
-                    DanhMucBUS.GetAll("ChuyenMon");
-
-                comboBoxChuyenMon.DataSource = dtChuyenMon;
-                comboBoxChuyenMon.DisplayMember = "TenCM";
-                comboBoxChuyenMon.ValueMember = "MaCM";
-                comboBoxChuyenMon.SelectedIndex = -1;
+                NapComboDanhMuc(comboBoxNgoaiNgu, "NgoaiNgu", "MaNN", "TenNN", "-- Chọn ngoại ngữ --");
+                NapComboDanhMuc(comboBoxChuyenMon, "ChuyenMon", "MaCM", "TenCM", "-- Chọn chuyên môn --");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Lỗi nạp dữ liệu: " + ex.Message,
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                HienLoi(ex, "Lỗi nạp dữ liệu:");
             }
         }
 
-        private void buttonLoc_Click(object sender, EventArgs e)
+        private void buttonLoc_Click(object? sender, EventArgs e)
         {
             try
             {
-                if (comboBoxNgoaiNgu.SelectedIndex == -1)
+                string? maNN = LayMa(comboBoxNgoaiNgu);
+                if (maNN == null)
                 {
-                    MessageBox.Show("Vui lòng chọn ngoại ngữ!");
+                    Canh("Vui lòng chọn ngoại ngữ!");
                     comboBoxNgoaiNgu.Focus();
                     return;
                 }
 
-                if (comboBoxChuyenMon.SelectedIndex == -1)
+                string? maCM = LayMa(comboBoxChuyenMon);
+                if (maCM == null)
                 {
-                    MessageBox.Show("Vui lòng chọn chuyên môn!");
+                    Canh("Vui lòng chọn chuyên môn!");
                     comboBoxChuyenMon.Focus();
                     return;
                 }
 
-                string maNN =
-                    comboBoxNgoaiNgu.SelectedValue.ToString();
-
-                string maCM =
-                    comboBoxChuyenMon.SelectedValue.ToString();
-
-                DataTable dt =
-                    BaoCaoBUS.BaoCaoNhanVienTheoNgoaiNguChuyenMon(
-                        maNN, maCM
-                    );
+                DataTable dt = BaoCaoBUS.BaoCaoNhanVienTheoNgoaiNguChuyenMon(maNN, maCM);
 
                 dataGridViewNhanVien.DataSource = dt;
 
                 if (dt.Rows.Count == 0)
-                {
-                    MessageBox.Show(
-                        "Không tìm thấy nhân viên phù hợp!",
-                        "Thông báo"
-                    );
-                }
+                    ThongTin("Không tìm thấy nhân viên phù hợp!");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Lỗi báo cáo: " + ex.Message,
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                HienLoi(ex, "Lỗi báo cáo:");
             }
         }
 
-        private void buttonTaiLai_Click(object sender, EventArgs e)
+        private void buttonTaiLai_Click(object? sender, EventArgs e)
         {
-            comboBoxNgoaiNgu.SelectedIndex = -1;
-            comboBoxChuyenMon.SelectedIndex = -1;
+            DatDauTien(comboBoxNgoaiNgu);
+            DatDauTien(comboBoxChuyenMon);
 
             dataGridViewNhanVien.DataSource = null;
         }
-        private void buttonXuatExcel_Click(object sender, EventArgs e)
+
+        private void buttonXuatExcel_Click(object? sender, EventArgs e)
         {
             ExcelHelper.XuatExcel(
                 dataGridViewNhanVien,
@@ -127,7 +87,7 @@ namespace QuanLyNhanSu.GUI
             );
         }
 
-        private void buttonDong_Click(object sender, EventArgs e)
+        private void buttonDong_Click(object? sender, EventArgs e)
         {
             this.Close();
         }

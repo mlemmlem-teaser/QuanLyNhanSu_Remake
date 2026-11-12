@@ -42,6 +42,7 @@
             // labelTieuDe
             // 
             labelTieuDe.AutoSize = true;
+            labelTieuDe.Anchor = AnchorStyles.Top;
             labelTieuDe.Location = new Point(250, 9);
             labelTieuDe.Name = "labelTieuDe";
             labelTieuDe.Size = new Size(258, 20);
@@ -99,6 +100,7 @@
             dataGridViewQTDTChuaKetThuc.AllowUserToDeleteRows = false;
             dataGridViewQTDTChuaKetThuc.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewQTDTChuaKetThuc.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewQTDTChuaKetThuc.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridViewQTDTChuaKetThuc.Location = new Point(12, 213);
             dataGridViewQTDTChuaKetThuc.MultiSelect = false;
             dataGridViewQTDTChuaKetThuc.Name = "dataGridViewQTDTChuaKetThuc";
@@ -106,7 +108,7 @@
             dataGridViewQTDTChuaKetThuc.RowHeadersVisible = false;
             dataGridViewQTDTChuaKetThuc.RowHeadersWidth = 51;
             dataGridViewQTDTChuaKetThuc.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridViewQTDTChuaKetThuc.Size = new Size(776, 225);
+            dataGridViewQTDTChuaKetThuc.Size = new Size(776, 265);
             dataGridViewQTDTChuaKetThuc.TabIndex = 6;
             // 
             // buttonXuatExcel
@@ -122,7 +124,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 490);
             Controls.Add(buttonXuatExcel);
             Controls.Add(dataGridViewQTDTChuaKetThuc);
             Controls.Add(labelDanhSach);

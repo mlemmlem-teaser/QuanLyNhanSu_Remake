@@ -10,7 +10,7 @@ namespace QuanLyNhanSu.GUI
     /// Quản lý quá trình công tác (thêm / sửa / xóa). Dữ liệu qua QTCTBUS và DanhMucBUS.
     /// Chọn một dòng trong danh sách để sửa/xóa; bấm "Làm mới" để nhập quá trình mới.
     /// </summary>
-    public partial class FormQTCT : Form
+    public partial class FormQTCT : FormCoSo
     {
         // true khi code đang nạp dữ liệu: bỏ qua sự kiện chọn dòng / đổi bộ lọc để tránh nạp lặp.
         private bool dangNap;
@@ -257,91 +257,6 @@ namespace QuanLyNhanSu.GUI
             dangNap = false;
             NapLuoi();
             NhapMoi();
-        }
-
-        // ===== Hàm dùng chung trong form =====
-
-        private static string Chuoi(object? giaTri)
-        {
-            if (giaTri == null || giaTri == DBNull.Value) return "";
-            return Convert.ToString(giaTri) ?? "";
-        }
-
-        // Nạp ComboBox: dòng đầu là lựa chọn "trống" (mã rỗng), các dòng sau lấy từ bảng nguồn.
-        private static void NapCombo(ComboBox combo, DataTable nguon, string cotMa,
-            Func<DataRow, string> layTen, string chuTrong)
-        {
-            DataTable ds = new DataTable();
-            ds.Columns.Add("Ma", typeof(string));
-            ds.Columns.Add("Ten", typeof(string));
-            ds.Rows.Add("", chuTrong);
-            foreach (DataRow r in nguon.Rows)
-                ds.Rows.Add(Chuoi(r[cotMa]), layTen(r));
-
-            combo.DropDownStyle = ComboBoxStyle.DropDownList;
-            combo.DisplayMember = "Ten";
-            combo.ValueMember = "Ma";
-            combo.DataSource = ds;
-            if (ds.Rows.Count > 0) combo.SelectedIndex = 0;
-        }
-
-        // Mã đang chọn trong ComboBox; null nếu chọn dòng trống.
-        private static string? LayMa(ComboBox combo)
-        {
-            string ma = Chuoi(combo.SelectedValue);
-            return string.IsNullOrWhiteSpace(ma) ? null : ma;
-        }
-
-        // Chọn mục có mã tương ứng; không có (hoặc null) thì về dòng trống.
-        private static void DatCombo(ComboBox combo, object? ma)
-        {
-            combo.SelectedValue = Chuoi(ma);
-            if (combo.SelectedIndex < 0 && combo.Items.Count > 0) combo.SelectedIndex = 0;
-        }
-
-        // Chọn dòng đầu tiên nếu ComboBox có dữ liệu (tránh lỗi khi chưa nạp được từ CSDL).
-        private static void DatDauTien(ComboBox combo)
-        {
-            if (combo.Items.Count > 0) combo.SelectedIndex = 0;
-        }
-
-        // Ngày rỗng: ô có checkbox -> bỏ tick; ô thường -> về hôm nay.
-        private static void DatNgay(DateTimePicker picker, object? giaTri)
-        {
-            if (giaTri == null || giaTri == DBNull.Value)
-            {
-                if (picker.ShowCheckBox) picker.Checked = false;
-                else picker.Value = DateTime.Today;
-                return;
-            }
-            picker.Value = Convert.ToDateTime(giaTri);
-            if (picker.ShowCheckBox) picker.Checked = true;
-        }
-
-        private static void DatCot(DataGridView luoi, string ten, string tieuDe, bool hien = true, string? dinhDang = null)
-        {
-            if (!luoi.Columns.Contains(ten)) return;
-            DataGridViewColumn cot = luoi.Columns[ten]!;
-            cot.HeaderText = tieuDe;
-            cot.Visible = hien;
-            if (dinhDang != null) cot.DefaultCellStyle.Format = dinhDang;
-        }
-
-        private static void Canh(string noiDung)
-        {
-            MessageBox.Show(noiDung, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-
-        private static void HienLoi(Exception ex)
-        {
-            if (ex is NghiepVuException)
-            {
-                Canh(ex.Message);
-                return;
-            }
-
-            MessageBox.Show("Thao tác không thành công.\n" + ex.Message, "Lỗi",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace QuanLyNhanSu.GUI
 {
-    public partial class FormDanhMuc : Form
+    public partial class FormDanhMuc : FormCoSo
     {
         private DataTable bangHienTai;
         private readonly string[] loaiDanhMuc = {
@@ -166,17 +166,6 @@ namespace QuanLyNhanSu.GUI
                         values[col.ColumnName] = inputs[col.ColumnName].Text.Trim();
                 return true;
             }
-        }
-
-        private void HienLoi(Exception ex)
-        {
-            if (ex is NghiepVuException)
-            {
-                MessageBox.Show(ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            MessageBox.Show("Thao tác không thành công.\n" + ex.Message, "Lỗi",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void buttonBack_Click(object sender, EventArgs e) { Close(); }

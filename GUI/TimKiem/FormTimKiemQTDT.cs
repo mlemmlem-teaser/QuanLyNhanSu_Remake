@@ -7,7 +7,7 @@ namespace QuanLyNhanSu.GUI
     /// Tìm kiếm quá trình đào tạo theo nhân viên, trường đào tạo, hình thức và khoảng ngày.
     /// Dữ liệu lấy từ QTDTBUS.
     /// </summary>
-    public partial class FormTimKiemQTDT : Form
+    public partial class FormTimKiemQTDT : FormCoSo
     {
         public FormTimKiemQTDT()
         {
@@ -25,11 +25,7 @@ namespace QuanLyNhanSu.GUI
         /// </summary>
         private void dataGridViewKetQua_DataBindingComplete(object? sender, DataGridViewBindingCompleteEventArgs e)
         {
-            if (dataGridViewKetQua.Columns.Count == 0) return;
-
-            DataGridViewColumn cotCuoi = dataGridViewKetQua.Columns[dataGridViewKetQua.Columns.Count - 1];
-            cotCuoi.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            cotCuoi.MinimumWidth = 150;
+            GianCotCuoi(dataGridViewKetQua);
         }
 
         // ===== Khởi tạo =====
@@ -41,14 +37,14 @@ namespace QuanLyNhanSu.GUI
             try
             {
                 NapComboBoxNhanVien();
-                NapComboBox(comboBoxTruongDaoTao, "TruongDT", "MaTruong", "TenTruong");
-                NapComboBox(comboBoxHinhThuc, "HinhThuc", "MaHT", "TenHT");
+                NapComboDanhMuc(comboBoxTruongDaoTao, "TruongDT", "MaTruong", "TenTruong");
+                NapComboDanhMuc(comboBoxHinhThuc, "HinhThuc", "MaHT", "TenHT");
 
                 TimKiem();
             }
             catch (Exception ex)
             {
-                HienThiLoi(ex);
+                HienLoi(ex, "Có lỗi khi truy vấn dữ liệu:");
             }
         }
 
@@ -69,22 +65,6 @@ namespace QuanLyNhanSu.GUI
             comboBoxNhanVien.SelectedIndex = 0;
         }
 
-        /// <summary>Nạp danh mục vào ComboBox, dòng đầu để trống (= không lọc).</summary>
-        private static void NapComboBox(ComboBox comboBox, string loaiDanhMuc, string cotMa, string cotTen)
-        {
-            DataTable bang = DanhMucBUS.GetAll(loaiDanhMuc);
-
-            DataRow dongTrong = bang.NewRow();
-            dongTrong[cotMa] = "";
-            dongTrong[cotTen] = "";
-            bang.Rows.InsertAt(dongTrong, 0);
-
-            comboBox.DisplayMember = cotTen;
-            comboBox.ValueMember = cotMa;
-            comboBox.DataSource = bang;
-            comboBox.SelectedIndex = 0;
-        }
-
         // ===== Tìm kiếm =====
 
         private void TimKiem()
@@ -103,18 +83,6 @@ namespace QuanLyNhanSu.GUI
             labelTongSo.Text = $"Tổng số: {ketQua.Rows.Count} kết quả";
         }
 
-        private static void HienThiLoi(Exception ex)
-        {
-            if (ex is NghiepVuException)
-            {
-                MessageBox.Show(ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            MessageBox.Show("Có lỗi khi truy vấn dữ liệu:\n" + ex.Message,
-                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
         // ===== Sự kiện =====
 
         private void buttonTimKiem_Click(object? sender, EventArgs e)
@@ -125,7 +93,7 @@ namespace QuanLyNhanSu.GUI
             }
             catch (Exception ex)
             {
-                HienThiLoi(ex);
+                HienLoi(ex, "Có lỗi khi truy vấn dữ liệu:");
             }
         }
 
@@ -143,7 +111,7 @@ namespace QuanLyNhanSu.GUI
             }
             catch (Exception ex)
             {
-                HienThiLoi(ex);
+                HienLoi(ex, "Có lỗi khi truy vấn dữ liệu:");
             }
         }
     }

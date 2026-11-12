@@ -1,45 +1,13 @@
-﻿/*
-===============================================================================
-QuanLyNhanSuProc.sql - CÁC STORED PROCEDURE CỦA CSDL QuanLyNhanSu
-===============================================================================
-CÁCH DÙNG
-  1. Chạy QuanLyNhanSu.sql (tạo CSDL + bảng) rồi QuanLyNhanSu_Data.sql (dữ liệu).
-  2. Chạy file này trong SSMS (Ctrl+A rồi F5) hoặc: sqlcmd -S .\SQLEXPRESS -I -i QuanLyNhanSuProc.sql
-     Có thể chạy lại nhiều lần: mỗi procedure được xóa rồi tạo lại.
-
-QUY ƯỚC
-  - Tên procedure: usp_<Nhóm>_<Chức năng>.
-  - Tham số lọc có giá trị mặc định NULL: NULL = bỏ qua tiêu chí đó.
-  - Procedure chỉ truy vấn dữ liệu; kiểm tra nghiệp vụ nằm ở tầng BUS (C#).
-  - Tầng DAL (C#) chỉ gọi các procedure này, không viết câu SQL trực tiếp.
-
-NHÓM PROCEDURE
-  usp_DanhMuc_*       : 13 danh mục (GioiTinh, ChucVu, DanToc, TonGiao, NoiSinh, NgoaiNgu,
-                        PhongBan, HocVan, ChuyenMon, TruongDT, HinhThuc, NganhDT, XepLoai)
-  usp_NhanVien_*      : hồ sơ nhân viên (+ usp_NV_NgoaiNgu_* cho bảng NV_NgoaiNgu)
-  usp_QTDT_*          : quá trình đào tạo
-  usp_QTCT_*          : quá trình công tác
-  usp_BaoCao_*        : các báo cáo
-===============================================================================
-*/
-
-USE QuanLyNhanSu;
+﻿USE QuanLyNhanSu;
 GO
 
--- Bắt buộc ON: câu SELECT của nhân viên dùng phương thức .value() của kiểu XML.
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
 
--- =============================================================================
--- 1. DANH MỤC  (Loai = tên danh mục, xem danh sách ở đầu file)
---    Cot2, Cot3 = cột dữ liệu thứ 2, thứ 3 sau cột tên (nếu danh mục có):
---      TonGiao: Cot2=GhiChu | PhongBan: Cot2=DienThoai | TruongDT: Cot2=DiaChi, Cot3=DienThoai
--- =============================================================================
+-- 1. DANH MỤC
 
 -- Lấy toàn bộ một danh mục (dùng cho lưới và để nạp ComboBox).
-IF OBJECT_ID(N'dbo.usp_DanhMuc_GetAll', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_DanhMuc_GetAll;
-GO
 CREATE PROCEDURE dbo.usp_DanhMuc_GetAll
     @Loai NVARCHAR(30)
 AS
@@ -105,8 +73,6 @@ END
 GO
 
 -- Thêm một dòng vào danh mục.
-IF OBJECT_ID(N'dbo.usp_DanhMuc_Insert', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_DanhMuc_Insert;
-GO
 CREATE PROCEDURE dbo.usp_DanhMuc_Insert
     @Loai NVARCHAR(30),
     @Ma VARCHAR(10),
@@ -176,8 +142,6 @@ END
 GO
 
 -- Sửa một dòng danh mục theo mã (khóa chính).
-IF OBJECT_ID(N'dbo.usp_DanhMuc_Update', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_DanhMuc_Update;
-GO
 CREATE PROCEDURE dbo.usp_DanhMuc_Update
     @Loai NVARCHAR(30),
     @Ma VARCHAR(10),
@@ -247,8 +211,6 @@ END
 GO
 
 -- Xóa một dòng danh mục. Nếu bảng khác đang tham chiếu, khóa ngoại sẽ chặn xóa.
-IF OBJECT_ID(N'dbo.usp_DanhMuc_Delete', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_DanhMuc_Delete;
-GO
 CREATE PROCEDURE dbo.usp_DanhMuc_Delete
     @Loai NVARCHAR(30),
     @Ma VARCHAR(10)
@@ -314,13 +276,9 @@ BEGIN
 END
 GO
 
--- =============================================================================
 -- 2. HỒ SƠ NHÂN VIÊN
--- =============================================================================
 
 -- Danh sách toàn bộ nhân viên (kèm tên danh mục và các ngoại ngữ).
-IF OBJECT_ID(N'dbo.usp_NhanVien_GetAll', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_NhanVien_GetAll;
-GO
 CREATE PROCEDURE dbo.usp_NhanVien_GetAll
 AS
 BEGIN
@@ -349,8 +307,6 @@ END
 GO
 
 -- Một hồ sơ nhân viên theo mã (dùng khi sửa và kiểm tra trùng mã).
-IF OBJECT_ID(N'dbo.usp_NhanVien_GetByMaNV', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_NhanVien_GetByMaNV;
-GO
 CREATE PROCEDURE dbo.usp_NhanVien_GetByMaNV
     @MaNV VARCHAR(10)
 AS
@@ -380,8 +336,6 @@ END
 GO
 
 -- Tìm nhân viên theo nhiều tiêu chí kết hợp (mã/tên chứa từ khóa; phòng ban, chức vụ, học vấn, ngoại ngữ).
-IF OBJECT_ID(N'dbo.usp_NhanVien_TimKiem', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_NhanVien_TimKiem;
-GO
 CREATE PROCEDURE dbo.usp_NhanVien_TimKiem
     @MaNV VARCHAR(10) = NULL,
     @TenNV NVARCHAR(50) = NULL,
@@ -423,8 +377,6 @@ END
 GO
 
 -- Thêm hồ sơ nhân viên (danh sách ngoại ngữ được lưu riêng bằng usp_NV_NgoaiNgu_Them).
-IF OBJECT_ID(N'dbo.usp_NhanVien_Insert', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_NhanVien_Insert;
-GO
 CREATE PROCEDURE dbo.usp_NhanVien_Insert
     @MaNV VARCHAR(10),
     @HoTen NVARCHAR(50),
@@ -456,8 +408,6 @@ END
 GO
 
 -- Sửa hồ sơ nhân viên theo mã.
-IF OBJECT_ID(N'dbo.usp_NhanVien_Update', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_NhanVien_Update;
-GO
 CREATE PROCEDURE dbo.usp_NhanVien_Update
     @MaNV VARCHAR(10),
     @HoTen NVARCHAR(50),
@@ -489,8 +439,6 @@ END
 GO
 
 -- Xóa nhân viên và các dòng NV_NgoaiNgu. Còn QTDT/QTCT liên quan thì khóa ngoại chặn xóa (và hủy cả giao dịch).
-IF OBJECT_ID(N'dbo.usp_NhanVien_Delete', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_NhanVien_Delete;
-GO
 CREATE PROCEDURE dbo.usp_NhanVien_Delete
     @MaNV VARCHAR(10)
 AS
@@ -505,8 +453,6 @@ END
 GO
 
 -- Mã các ngoại ngữ của một nhân viên (để tick sẵn khi sửa hồ sơ).
-IF OBJECT_ID(N'dbo.usp_NhanVien_GetNgoaiNgu', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_NhanVien_GetNgoaiNgu;
-GO
 CREATE PROCEDURE dbo.usp_NhanVien_GetNgoaiNgu
     @MaNV VARCHAR(10)
 AS
@@ -517,8 +463,6 @@ END
 GO
 
 -- Xóa toàn bộ ngoại ngữ của một nhân viên (trước khi lưu lại danh sách mới).
-IF OBJECT_ID(N'dbo.usp_NV_NgoaiNgu_Xoa', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_NV_NgoaiNgu_Xoa;
-GO
 CREATE PROCEDURE dbo.usp_NV_NgoaiNgu_Xoa
     @MaNV VARCHAR(10)
 AS
@@ -529,8 +473,6 @@ END
 GO
 
 -- Thêm một ngoại ngữ cho nhân viên.
-IF OBJECT_ID(N'dbo.usp_NV_NgoaiNgu_Them', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_NV_NgoaiNgu_Them;
-GO
 CREATE PROCEDURE dbo.usp_NV_NgoaiNgu_Them
     @MaNV VARCHAR(10),
     @MaNN VARCHAR(10)
@@ -541,13 +483,9 @@ BEGIN
 END
 GO
 
--- =============================================================================
 -- 3. QUÁ TRÌNH ĐÀO TẠO (QTDT)
--- =============================================================================
 
 -- Toàn bộ quá trình đào tạo (kèm tên nhân viên/trường/hình thức/ngành/xếp loại).
-IF OBJECT_ID(N'dbo.usp_QTDT_GetAll', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTDT_GetAll;
-GO
 CREATE PROCEDURE dbo.usp_QTDT_GetAll
 AS
 BEGIN
@@ -564,8 +502,6 @@ END
 GO
 
 -- Lọc QTDT theo nhân viên, trường, hình thức và khoảng ngày. Quá trình thiếu ngày thì bị loại khi lọc theo ngày đó.
-IF OBJECT_ID(N'dbo.usp_QTDT_TimKiem', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTDT_TimKiem;
-GO
 CREATE PROCEDURE dbo.usp_QTDT_TimKiem
     @MaNV VARCHAR(10) = NULL,
     @MaTruong VARCHAR(10) = NULL,
@@ -592,8 +528,6 @@ END
 GO
 
 -- Thêm một quá trình đào tạo.
-IF OBJECT_ID(N'dbo.usp_QTDT_Insert', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTDT_Insert;
-GO
 CREATE PROCEDURE dbo.usp_QTDT_Insert
     @MaQTDT VARCHAR(10),
     @MaNV VARCHAR(10),
@@ -612,8 +546,6 @@ END
 GO
 
 -- Sửa một quá trình đào tạo theo mã.
-IF OBJECT_ID(N'dbo.usp_QTDT_Update', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTDT_Update;
-GO
 CREATE PROCEDURE dbo.usp_QTDT_Update
     @MaQTDT VARCHAR(10),
     @MaNV VARCHAR(10),
@@ -633,8 +565,6 @@ END
 GO
 
 -- Xóa một quá trình đào tạo.
-IF OBJECT_ID(N'dbo.usp_QTDT_Delete', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTDT_Delete;
-GO
 CREATE PROCEDURE dbo.usp_QTDT_Delete
     @MaQTDT VARCHAR(10)
 AS
@@ -645,8 +575,6 @@ END
 GO
 
 -- Đếm số dòng có mã này (kiểm tra trùng mã trước khi thêm).
-IF OBJECT_ID(N'dbo.usp_QTDT_TonTai', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTDT_TonTai;
-GO
 CREATE PROCEDURE dbo.usp_QTDT_TonTai
     @MaQTDT VARCHAR(10)
 AS
@@ -657,8 +585,6 @@ END
 GO
 
 -- Gợi ý mã mới = mã số lớn nhất hiện có + 1 (bỏ qua các mã không phải số).
-IF OBJECT_ID(N'dbo.usp_QTDT_MaMoi', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTDT_MaMoi;
-GO
 CREATE PROCEDURE dbo.usp_QTDT_MaMoi
 AS
 BEGIN
@@ -668,13 +594,9 @@ BEGIN
 END
 GO
 
--- =============================================================================
 -- 4. QUÁ TRÌNH CÔNG TÁC (QTCT)
--- =============================================================================
 
 -- Toàn bộ quá trình công tác (kèm tên nhân viên, phòng ban, chức vụ).
-IF OBJECT_ID(N'dbo.usp_QTCT_GetAll', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTCT_GetAll;
-GO
 CREATE PROCEDURE dbo.usp_QTCT_GetAll
 AS
 BEGIN
@@ -689,8 +611,6 @@ END
 GO
 
 -- Lọc QTCT theo nhân viên và/hoặc phòng ban.
-IF OBJECT_ID(N'dbo.usp_QTCT_TimKiem', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTCT_TimKiem;
-GO
 CREATE PROCEDURE dbo.usp_QTCT_TimKiem
     @MaNV VARCHAR(10) = NULL,
     @MaPhong VARCHAR(10) = NULL
@@ -709,8 +629,6 @@ END
 GO
 
 -- Thêm một quá trình công tác.
-IF OBJECT_ID(N'dbo.usp_QTCT_Insert', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTCT_Insert;
-GO
 CREATE PROCEDURE dbo.usp_QTCT_Insert
     @MaQTCT VARCHAR(10),
     @MaNV VARCHAR(10),
@@ -727,8 +645,6 @@ END
 GO
 
 -- Sửa một quá trình công tác theo mã.
-IF OBJECT_ID(N'dbo.usp_QTCT_Update', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTCT_Update;
-GO
 CREATE PROCEDURE dbo.usp_QTCT_Update
     @MaQTCT VARCHAR(10),
     @MaNV VARCHAR(10),
@@ -746,8 +662,6 @@ END
 GO
 
 -- Xóa một quá trình công tác.
-IF OBJECT_ID(N'dbo.usp_QTCT_Delete', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTCT_Delete;
-GO
 CREATE PROCEDURE dbo.usp_QTCT_Delete
     @MaQTCT VARCHAR(10)
 AS
@@ -758,8 +672,6 @@ END
 GO
 
 -- Đếm số dòng có mã này (kiểm tra trùng mã trước khi thêm).
-IF OBJECT_ID(N'dbo.usp_QTCT_TonTai', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTCT_TonTai;
-GO
 CREATE PROCEDURE dbo.usp_QTCT_TonTai
     @MaQTCT VARCHAR(10)
 AS
@@ -770,8 +682,6 @@ END
 GO
 
 -- Gợi ý mã mới = mã số lớn nhất hiện có + 1 (bỏ qua các mã không phải số).
-IF OBJECT_ID(N'dbo.usp_QTCT_MaMoi', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_QTCT_MaMoi;
-GO
 CREATE PROCEDURE dbo.usp_QTCT_MaMoi
 AS
 BEGIN
@@ -781,13 +691,9 @@ BEGIN
 END
 GO
 
--- =============================================================================
 -- 5. BÁO CÁO
--- =============================================================================
 
 -- Báo cáo QTDT theo nhân viên, trường đào tạo, ngành đào tạo (NULL = không lọc).
-IF OBJECT_ID(N'dbo.usp_BaoCao_QTDT', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_BaoCao_QTDT;
-GO
 CREATE PROCEDURE dbo.usp_BaoCao_QTDT
     @MaNV VARCHAR(10) = NULL,
     @MaTruong VARCHAR(10) = NULL,
@@ -812,8 +718,6 @@ END
 GO
 
 -- Báo cáo QTCT theo nhân viên và/hoặc phòng ban (NULL = không lọc).
-IF OBJECT_ID(N'dbo.usp_BaoCao_QTCT', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_BaoCao_QTCT;
-GO
 CREATE PROCEDURE dbo.usp_BaoCao_QTCT
     @MaNV VARCHAR(10) = NULL,
     @MaPhong VARCHAR(10) = NULL
@@ -833,8 +737,6 @@ END
 GO
 
 -- Nhân viên có ĐỒNG THỜI ngoại ngữ và chuyên môn đã chọn.
-IF OBJECT_ID(N'dbo.usp_BaoCao_NhanVienTheoNgoaiNguChuyenMon', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_BaoCao_NhanVienTheoNgoaiNguChuyenMon;
-GO
 CREATE PROCEDURE dbo.usp_BaoCao_NhanVienTheoNgoaiNguChuyenMon
     @MaNN VARCHAR(10),
     @MaCM VARCHAR(10)
@@ -856,8 +758,6 @@ END
 GO
 
 -- QTDT đã bắt đầu và chưa qua ngày kết thúc (DenNgay NULL coi như chưa kết thúc). Ngày hiện tại lấy từ SQL Server.
-IF OBJECT_ID(N'dbo.usp_BaoCao_QTDTChuaKetThuc', N'P') IS NOT NULL DROP PROCEDURE dbo.usp_BaoCao_QTDTChuaKetThuc;
-GO
 CREATE PROCEDURE dbo.usp_BaoCao_QTDTChuaKetThuc
 AS
 BEGIN
@@ -875,7 +775,4 @@ BEGIN
       AND (q.DenNgay IS NULL OR q.DenNgay >= CONVERT(date, GETDATE()))
     ORDER BY q.DenNgay, q.MaQTDT;
 END
-GO
-
-PRINT N'Đã tạo xong các stored procedure của QuanLyNhanSu.';
 GO
